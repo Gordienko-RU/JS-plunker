@@ -1,0 +1,22 @@
+{
+  "name": "js-plunker",
+  "version": "1.0.0",
+  "description": "plunker to code what I want to code in js word :|",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gordienko-RU/JS-plunker.git"
+  },
+  "author": "Gordienko R.U.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gordienko-RU/JS-plunker/issues"
+  },
+  "homepage": "https://github.com/Gordienko-RU/JS-plunker#readme",
+  "dependencies": {
+    "jest": "^24.8.0"
+  }
+}
