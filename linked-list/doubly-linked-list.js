@@ -10,8 +10,10 @@ const head = Symbol('head');
 const tail = Symbol('tail');
 
 class DoublyLinkedList {
-  [head] = null;
-  [tail] = null;
+  constructor() {
+    this[head] = null;
+    this[tail] = null;
+  }
 
   add(data) {
     const node = new DoublyLinkedNode({
@@ -20,13 +22,14 @@ class DoublyLinkedList {
       next: null,
     });
 
-    if (!head) {
+    if (!this[head]) {
       this[head] = node;
       this[tail] = node;
 
       return node;
     }
-    this.tail.next = node;
+    this[tail].next = node;
+    this[tail] = node;
 
     return node;
   }
@@ -35,18 +38,25 @@ class DoublyLinkedList {
     let i = 0;
     let current = this[head];
 
-    while(current && ++i !== index) {
+    while(current && i !== index) {
       current = current.next;
+      i++;
     }
 
-    return current;
+    return current ? current.data : null;
   }
 
   delete(index) {
-    const targetNode = this.get(index);
+    let i = 0;
+    let current = this[head];
 
-    if (targetNode) {
-      const { previous, next } = targetNode;
+    while(current && i !== index) {
+      current = current.next;
+      i++;
+    }
+
+    if (current) {
+      const { previous, next } = current;
 
       previous.next = next;
 
