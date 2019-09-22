@@ -9,6 +9,8 @@ class DoublyLinkedNode {
 const head = Symbol('head');
 const tail = Symbol('tail');
 
+// iterable List with basic functionality
+// TODO: populate with new methods
 class DoublyLinkedList {
   constructor() {
     this[head] = null;

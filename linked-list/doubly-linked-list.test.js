@@ -10,7 +10,7 @@ const initializeList = () => {
 }
 
 describe('Doubly linked list:', () => {
-  beforeEach(() => initializeList());
+  beforeEach(initializeList);
 
   it('gets elements by index', () => {
     expect(doublyLinkedList.get(0)).toEqual('1');
