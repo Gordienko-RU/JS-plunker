@@ -22,7 +22,7 @@ const traverse = (value, parent, key) => {
     nodeValue = key;
     childKeys = Object.keys(value);
   }
-  const node = GenericTreeNode(nodeValue);
+  const node = new GenericTreeNode(nodeValue);
   node.setParent(parent);
 
   if (!childKeys || !childKeys.length) {
@@ -47,7 +47,7 @@ const buildTreeFromObject = (obj) => {
     return;
   }
   const rootKey = Object.keys(obj)[0];
-  const rootNode = GenericTreeNode(keys[0]);
+  const rootNode = new GenericTreeNode(keys[0]);
 
   Object.keys(obj[rootKey]).forEach(key => traverse(obj[rootKey][key], rootNode, key));
 
