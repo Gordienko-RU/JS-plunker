@@ -16,7 +16,7 @@ const traverse = (value, parent, key) => {
   let nodeValue = null;
   let childKeys = null;
 
-  if (typeof value !== "Object") {
+  if (typeof value !== "object") {
     nodeValue = value;
   } else {
     nodeValue = key;
