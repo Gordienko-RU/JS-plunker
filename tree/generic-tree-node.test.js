@@ -47,5 +47,4 @@ describe('GenericTreeNode', () => {
     expect(anotherNode.childrens[0].parent == rootNode);
     expect(childNode.parent == anotherNode);
   })
-
 });

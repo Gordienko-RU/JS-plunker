@@ -6,6 +6,12 @@ const nestedObject = {
     first: {
       child1: 'val1',
       child2: 'val2',
+      child3: {
+        child1: 'val3',
+        child2: {
+          child1: 'val1',
+        }
+      }
     },
     second: {
       child1: 'val2',
