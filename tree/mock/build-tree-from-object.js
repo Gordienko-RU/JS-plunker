@@ -1,4 +1,4 @@
-const GenericTreeNode = require('./generic-tree-node');
+const GenericTreeNode = require('../generic-tree-node');
 
 /**
  * @typedef GenericTreeNode

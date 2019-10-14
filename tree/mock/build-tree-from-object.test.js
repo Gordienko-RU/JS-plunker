@@ -1,30 +1,10 @@
 const buildTreeFromObject = require('./build-tree-from-object');
-const GenericTreeNode = require('./generic-tree-node');
-
-const nestedObject = {
-  root: {
-    first: {
-      child1: 'val1',
-      child2: 'val2',
-      child3: {
-        child1: 'val3',
-        child2: {
-          child1: 'val1',
-        }
-      }
-    },
-    second: {
-      child1: 'val2',
-    },
-    third: {
-      child3: 'val3',
-    },
-  }
-}
+const GenericTreeNode = require('../generic-tree-node');
+const { mockObj } = require('./');
 
 describe('build tree from generic object', () => {
   it('build tree successfully', () => {
-    const rootNode = buildTreeFromObject(nestedObject);
+    const rootNode = buildTreeFromObject(mockObj);
     expect(rootNode instanceof GenericTreeNode);
 
     expect(rootNode.data).toBe('root');
