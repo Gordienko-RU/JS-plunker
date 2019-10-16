@@ -4,7 +4,8 @@
   "description": "plunker to code what I want to code in js world :|",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "transpile": "babel --out-dir transpiled"
   },
   "repository": {
     "type": "git",
