@@ -1,27 +1,15 @@
-function callCounter(_, name, descriptor) {
-  let counter = 0;
-  const originalHandler = descriptor.value;
+function callCounter(counter) {
+  return function(target) {
+    const originalHandler = target.descriptor.value;
+    const { descriptor } = target;
 
-  descriptor.value = function(...args) {
-    console.log(`${name} called in ${counter} time`);
-    return originalHandler.call(this, args);
-  };
+    descriptor.value = function(...args) {
+      counter.increase();
+      return originalHandler.call(this, ...args);
+    };
 
-  return descriptor;
-}
-
-class Box {
-  constructor() {
-    this.open = true;
-  }
-
-  @callCounter
-  open() {
-    this.open = true;
-  }
-
-  @callCounter
-  close() {
-    this.open = close;
+    return { ...target, descriptor };
   }
 }
+
+module.exports = { callCounter }

@@ -1,4 +1,8 @@
-const presets = ['@babel/env'];
+const presets = [
+  ['@babel/env', {
+    targets: { node: 'current' },
+  }]
+];
 const plugins = [
   ['@babel/plugin-proposal-decorators', {
     decoratorsBeforeExport: true,

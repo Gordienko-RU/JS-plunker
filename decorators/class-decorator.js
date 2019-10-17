@@ -1,9 +1,7 @@
-function callLogger(constructorF) {
-  return function(...args) {
-    console.log(`instance of ${constructorF.name} created`);
-    return constructorF(...args);
-  }
+function protectFromWrite(target) {
+  target.elements.forEach(({ descriptor }) => descriptor.writable = false);
 }
 
-@callLogger
-class Box {}
+module.exports = {
+  protectFromWrite,
+}
