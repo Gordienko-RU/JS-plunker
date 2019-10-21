@@ -46,9 +46,9 @@ const buildTreeFromObject = (obj) => {
   if (!keys.length) {
     return;
   }
-  const rootKey = Object.keys(obj)[0];
-  const rootNode = new GenericTreeNode(keys[0]);
 
+  const rootKey = keys[0];
+  const rootNode = new GenericTreeNode(rootKey);
   Object.keys(obj[rootKey]).forEach(key => traverse(obj[rootKey][key], rootNode, key));
 
   return rootNode;

@@ -42,12 +42,11 @@ const populateObjectWithUniquesIdBranches = ({ deepLevel, branchCount, targetObj
 
     while(deepCounter < deepLevel) {
       const { value } = uniqIdGen.next();
-      linkToLastTarget[value] = {};
+      linkToLastTarget[value] = deepCounter + 1 < deepLevel ? {} : String(value);
       linkToLastTarget = linkToLastTarget[value];
       deepCounter++;
     }
   }
-
   return targetObj;
 }
 
