@@ -1,7 +1,7 @@
 const BFSSearch = (rootNode, value) => {
   let currentNode = rootNode;
   const queue = [];
-
+  
   while(currentNode) {
     if (currentNode.data === value) {
       return currentNode;
@@ -19,8 +19,15 @@ const DFSSearch = (node, value) => {
   if (node.data === value) {
     return node;
   } else {
-    const rez = node.childrens.map(childNode => DFSSearch(childNode, value));
-    console.log(rez);
+    const { childrens } = node;
+
+    for (let i = 0; i < childrens.length; i++) {
+      const res = DFSSearch(childrens[i], value);
+
+      if (res) {
+        return res;
+      }
+    }
   }
 }
 
