@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "transpile": "babel --out-dir transpiled"
+    "transpile": "babel --out-dir transpiled",
+    "testByPattern": "jest -t"
   },
   "repository": {
     "type": "git",
