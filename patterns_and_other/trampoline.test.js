@@ -16,6 +16,6 @@ describe('trampoline', () => {
   it('prevent stack overflow', () => {
     const wrapped = trampoline(sumBelow);
 
-    console.log(wrapped(100000000));
+    expect(wrapped(100000000));
   })
 });
