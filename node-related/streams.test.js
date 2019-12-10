@@ -8,9 +8,15 @@ async function handleChunks(cb, stream) {
 
 describe('streams', () => {
   it('handles readable stream', async () => {
-    const readableStream = fs.createReadStream('./node-related/stream.test.txt', { encoding: 'utf-8' });
-    let content;
-
+    const readableStream = fs.createReadStream(
+      './node-related/stream.test.txt',
+      {
+        encoding: 'utf-8',
+        highWaterMark: 2,
+      },
+    );
+    let content = '';
+    
     await handleChunks(chunk => content += chunk, readableStream);
     expect(content).toBe('test');
   })
