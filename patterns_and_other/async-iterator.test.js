@@ -15,6 +15,16 @@ const obj = {
   } 
 }
 
+const syncIteratedObject = {
+  [Symbol.iterator]: function* generator() {
+    const values = [2];
+
+    while (values.length) {
+      yield values.shift();
+    }
+  } 
+}
+
 describe('async iterator', () => {
   it('both async & sync iterators on the same object are called correctly', () => {
     for (const value of obj) {
@@ -24,6 +34,15 @@ describe('async iterator', () => {
       async function () {
         for await (const value of obj) {
           expect(value).toBe(1);
+        }
+      }
+    )();
+  })
+  it('for await not throwing an errors even without async iterator', () => {
+    (
+      async function () {
+        for await (const value of syncIteratedObject) {
+          expect(value).toBe(2);
         }
       }
     )();
