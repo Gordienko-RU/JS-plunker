@@ -30,5 +30,23 @@ describe('streams', () => {
 
     readableStream.on('data', chunk => expect(chunk).toBe('test'));
   })
+  it('creates simple write stream', async () => {
+    const writableStream = fs.createWriteStream('./node-related/stream.test2.txt');
+
+    writableStream.write('content');
+    writableStream.end();
+
+    const readableStream = fs.createReadStream(
+      './node-related/stream.test2.txt',
+      {
+        encoding: 'utf-8',
+        highWaterMark: 2,
+      },
+    );
+    let content = '';
+    
+    await handleChunks(chunk => content += chunk, readableStream);
+    expect(content).toBe('test');
+  })
 })
 
