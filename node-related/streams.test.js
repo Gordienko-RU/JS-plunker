@@ -46,7 +46,7 @@ describe('streams', () => {
     let content = '';
     
     await handleChunks(chunk => content += chunk, readableStream);
-    expect(content).toBe('test');
+    expect(content).toBe('content');
   })
 })
 
