@@ -1,5 +1,6 @@
 const fs = require('fs');
-const { Readable } = require('stream');
+const { Readable, finished } = require('stream');
+const { promisify } = require('util');
 
 async function handleChunks(cb, stream) {
   for await(const chunk of stream) {
@@ -47,6 +48,22 @@ describe('streams', () => {
     
     await handleChunks(chunk => content += chunk, readableStream);
     expect(content).toBe('content');
+  })
+  it('create write stream from iterator', async () => {
+    const whenFinish = promisify(finished);
+
+    async function writeIterableToFile(iterable, pathToFile) {
+      const writableStream = fs.createWriteStream(pathToFile);
+
+      for await(const chunk of iterable) {
+        writableStream.write(chunk);
+      }
+      writableStream.end();
+
+      await whenFinish(writableStream);
+    }
+
+    
   })
 })
 
