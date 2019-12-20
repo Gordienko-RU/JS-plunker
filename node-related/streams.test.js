@@ -1,6 +1,7 @@
 const fs = require('fs');
 const { Readable, finished } = require('stream');
 const { promisify } = require('util');
+const { once } = require('events');
 
 async function handleChunks(cb, stream) {
   for await(const chunk of stream) {
@@ -56,14 +57,28 @@ describe('streams', () => {
       const writableStream = fs.createWriteStream(pathToFile);
 
       for await(const chunk of iterable) {
-        writableStream.write(chunk);
+        if(!writableStream.write(chunk)) {
+          await once(writableStream, 'drain');
+        };
       }
       writableStream.end();
 
       await whenFinish(writableStream);
-    }
+    };
 
+    await writeIterableToFile(['data', 'data', 'data'], './node-related/stream.test3.txt');
+
+    const readableStream = fs.createReadStream(
+      './node-related/stream.test3.txt',
+      {
+        encoding: 'utf-8',
+        highWaterMark: 2,
+      },
+    );
+    let content = '';
     
+    await handleChunks(chunk => content += chunk, readableStream);
+    expect(content).toBe('datadatadata');
   })
 })
 
