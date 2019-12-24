@@ -12,5 +12,5 @@ const quickSort = (array) => {
   const rightSide = array.filter(item => item > pivotElement);
   const leftSide = array.slice(item => item < pivotElement);
 
-  return [...quickSort(rightSide), pivotElement, ...quickSort(leftSide)];
+  return [...quickSort(leftSide), pivotElement, ...quickSort(rightSide)];
 }
