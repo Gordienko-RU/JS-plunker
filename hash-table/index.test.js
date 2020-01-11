@@ -33,7 +33,7 @@ class SecondLevelDictionary {
     // or there is no such value in bucket
     // TODO: Currently, if there is no looked key in bucket, initial value will be returned,
     // think about is it a problem, if yes, how it could be fixed
-    return this.values(targetKey === -1 ? initialItemKey : targetKey);
+    return this.values[targetKey === -1 ? initialItemKey : targetKey];
   }
 }
 
@@ -48,7 +48,7 @@ class HashTable {
    * @param {*} value 
    * @param {number} [testIndex] for test purposes only
    */
-  set(key, value, testIndex = null) {
+  set(key, value, testIndex) {
     const hash = testIndex || generateHash(key);
     const store = this.store;
 
@@ -77,7 +77,7 @@ class HashTable {
    * @param {number} [testIndex] for test purposes only 
    * @param {Function} [valueChecker] for test purposes only 
    */
-  get(key, testIndex = null, valueChecker = null) {
+  get(key, testIndex, valueChecker) {
     const bucket = this.store[testIndex || generateHash(key)];
 
     if (valueChecker) {
@@ -116,8 +116,22 @@ describe('HashTable', () => {
     expect(hashTable.get('testKey')).toBe('testValue');
   })
 
-  it('doesn\'t create second level store f there is only one value', () => {
+  it('doesn\'t create second level store if there is only one value in bucket', () => {
+    let fromBucket = null;
+
+    hashTable.set('key', 'test', 1);
+    hashTable.get('key', 1, value => fromBucket = value)
+
+    expect(typeof fromBucket).toBe('string');
   })
+
   it('creates second level storage if there are several items in one bucket', () => {
+    let fromBucket = null;
+
+    hashTable.set('key', 'test', 1);
+    hashTable.set('key', 'test1', 1);
+    hashTable.get('key', 1, value => fromBucket = value);
+
+    expect(fromBucket['__proto__']).toBe(SecondLevelDictionary.prototype);
   })
 })
