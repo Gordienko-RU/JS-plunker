@@ -43,8 +43,13 @@ class HashTable {
     this.store = [];
   }
 
-  set(key, value) {
-    const hash = generateHash(key);
+  /**
+   * @param {string} key 
+   * @param {*} value 
+   * @param {number} [testIndex] for test purposes only
+   */
+  set(key, value, testIndex = null) {
+    const hash = testIndex || generateHash(key);
     const store = this.store;
 
     if (!store[hash]) {
@@ -67,8 +72,17 @@ class HashTable {
     store[hash] = bucketDictionary;
   }
 
-  get(key) {
-    const bucket = this.store[generateHash(key)];
+  /**
+   * @param {string} key 
+   * @param {number} [testIndex] for test purposes only 
+   * @param {Function} [valueChecker] for test purposes only 
+   */
+  get(key, testIndex = null, valueChecker = null) {
+    const bucket = this.store[testIndex || generateHash(key)];
+
+    if (valueChecker) {
+      valueChecker(this.store[testIndex]);
+    }
 
     if (bucket instanceof SecondLevelDictionary) {
       return bucket.get(key);
@@ -87,5 +101,23 @@ describe('hashFunction', () => {
   })
   it('return number', () => {
     expect(typeof generateHash('test')).toBe('number');
+  })
+})
+
+let hashTable = null;
+
+describe('HashTable', () => {
+  beforeEach(() => {
+    hashTable = new HashTable();
+  })
+
+  it('set and access value by key', () => {
+    hashTable.set('testKey', 'testValue');
+    expect(hashTable.get('testKey')).toBe('testValue');
+  })
+
+  it('doesn\'t create second level store f there is only one value', () => {
+  })
+  it('creates second level storage if there are several items in one bucket', () => {
   })
 })
