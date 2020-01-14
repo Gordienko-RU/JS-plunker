@@ -14,10 +14,10 @@ class Edge {
  */
 class GraphNode {
   /**
-   * @param {string} name 
+   * @param {string} value 
    */
-  constructor(name) {
-    this.name = name;
+  constructor(value) {
+    this.value = value;
     // NOTE: each node contains only info regarding emitted edges
     this.emittedEdges = [];
   }
@@ -31,11 +31,48 @@ class GraphNode {
   }
 }
 
+/**
+ * @description BFS used to find shortest path
+ * @param {GraphNode} startNode
+ * @param {string} searchValue
+ * @returns {string []}
+ */
+function findShortestWay(startNode, searchValue) {
+  if (startNode.value === searchValue) {
+    return [startNode.value];
+  }
+
+  const queue = [];
+  const visitedNodes = [];
+  const parentNodes = {};
+
+  queue.push(...startNode.emittedEdges);
+  visitedNodes.push(startNode.value);
+  
+  startNode.emittedEdges.forEach((node) => {
+    
+  })
+
+  while(queue.length) {
+    const currentNode = queue.shift();
+    
+    if (visitedNodes.includes(currentNode.value)) {
+      continue;
+    }
+
+
+
+    if () {
+
+    }
+  }
+}
+
 describe('Graph', () => {
   it('creates graph node', () => {
     const node = new GraphNode('A');
 
-    expect(node.name).toBe('A');
+    expect(node.value).toBe('A');
   })
   it('creates directed weighted edge', () => {
     const node1 = new GraphNode('A');
