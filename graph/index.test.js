@@ -37,7 +37,6 @@ class GraphNode {
  * @param {string} targetNodeValue
  * @returns {string []}
  */
-// TODO: cover with tests
 function getPath(parents, targetNodeValue) {
   const path = [targetNodeValue];
   let segment = parents[targetNodeValue];
@@ -51,31 +50,35 @@ function getPath(parents, targetNodeValue) {
 }
 
 /**
+ * @param {Edge []} edges
+ * @returns {GraphNode []}
+ */
+function extractNodes(edges) {
+  return edges.map(({ node }) => node);
+}
+
+/**
  * @description BFS used to find shortest path
  * @param {GraphNode} startNode
  * @param {string} searchValue
  * @returns {string []}
  */
 function findShortestWay(startNode, searchValue) {
-  const { value: startNodeValue, emittedEdges: startNodeEdges } = startNode;
-
-  if (startNodeValue === searchValue) {
-    return [startNodeValue];
-  }
-  const queue = [];
+  const queue = [startNode];
   const visitedNodes = [];
-  const parentNodes = {};
-
-  queue.push(...startNodeEdges);
-  visitedNodes.push(startNodeValue);
-  
-  startNodeEdges.forEach((node) => {
-    parentNodes[node.value] = startNodeValue;
-  })
+  const parents = {};
 
   while(queue.length) {
     const currentNode = queue.shift();
     const { value, emittedEdges } = currentNode;
+
+    const connectedNodes = extractNodes(emittedEdges);
+
+    connectedNodes.forEach((node) => {
+      if (!Object.keys(parents).includes(node.value)) {
+        parents[node.value] = value;
+      }
+    });
 
     if (value === searchValue) {
       return getPath(parents, value);
@@ -84,9 +87,8 @@ function findShortestWay(startNode, searchValue) {
     if (visitedNodes.includes(value)) {
       continue;
     }
-
+    queue.push(...connectedNodes);
     visitedNodes.push(value);
-    queue.push(...emittedEdges);
   }
 
   throw new Error(`node ${searchValue} doesn't exist`);
@@ -98,7 +100,6 @@ describe('Graph', () => {
   beforeEach(() => {
     startNode = new GraphNode('A');
     const node1 = new GraphNode('B');
-
     const node2 = new GraphNode('C');
     const node3 = new GraphNode('D');
     const node4 = new GraphNode('F');
@@ -106,6 +107,7 @@ describe('Graph', () => {
 
     startNode.setEdgeTo(node1, 5);
     startNode.setEdgeTo(node2, 2);
+    startNode.setEdgeTo(node5, 70);
     node2.setEdgeTo(node1, 2);
     node2.setEdgeTo(node3, 7);
     node3.setEdgeTo(node4, 5);
@@ -129,6 +131,6 @@ describe('Graph', () => {
   })
 
   it('finds the shortest path to the node', () => {
-    console.log('shortest path', findShortestWay(startNode, 'G'));
+    expect(findShortestWay(startNode, 'G')).toStrictEqual(['A', 'G']);
   })
 })
