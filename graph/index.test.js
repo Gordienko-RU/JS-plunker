@@ -63,6 +63,7 @@ function extractNodes(edges) {
  * @param {string} searchValue
  * @returns {string []}
  */
+// TODO: use references, not strings
 function findShortestWay(startNode, searchValue) {
   const queue = [startNode];
   const visitedNodes = [];
@@ -94,7 +95,91 @@ function findShortestWay(startNode, searchValue) {
   throw new Error(`node ${searchValue} doesn't exist`);
 }
 
+/**
+ * @param {Map} costs
+ * @param {Set} visitedNodes
+ * @returns {GraphNode | null}
+ */
+function pickCheapestNode(costs, visitedNodes) {
+  const cheapestNode = Array.from(costs).reduce((acc, [node, cost]) => {
+    const currentCheapestCost = costs.get(acc);
+
+    return !visitedNodes.has(node) && (cost < currentCheapestCost || !currentCheapestCost)
+      ? node
+      : acc;
+  }, {});
+
+  return cheapestNode instanceof GraphNode
+    ? cheapestNode
+    : null;
+}
+
+/**
+ * @param {Map} parents 
+ * @param {GraphNode} targetNode
+ * @returns {string []}
+ */
+function getPathFromMaps(parents, targetNode) {
+  const path = [targetNode.value];
+  let segment = parents.get(targetNode);
+
+  while(segment) {
+    path.unshift(segment.value);
+    segment = parents.get(segment);
+  }
+
+  return path;
+}
+
+/**
+ * @description Dijkstra used to find cheapest path
+ * @param {GraphNode} startNode
+ * @param {GraphNode} targetNode
+ * @returns {string []}
+ */
+function findCheapestPath(startNode, targetNode) {
+  const queue = [startNode];
+  const visitedNodes = new Set();
+  const parents = new Map();
+  const costs = new Map();
+  costs.set(startNode, 0);
+
+  while (queue.length) {
+    const processedNode = queue.shift();
+
+    if (processedNode === targetNode) {
+      return {
+        path: getPathFromMaps(parents, processedNode),
+        cost: costs.get(processedNode),
+      }
+    }
+
+    const { emittedEdges } = processedNode;
+    const processedNodeCost = costs.get(processedNode);
+
+    for (const edge of emittedEdges) {
+      const { node, weight } = edge;
+      const newCost = processedNodeCost + weight;
+      const oldCost = costs.get(node);
+
+      if (!oldCost || (oldCost > newCost)) {
+        costs.set(node, newCost);
+        parents.set(node, processedNode);
+      }
+    }
+    
+    visitedNodes.add(processedNode);
+    const cheapestNode = pickCheapestNode(costs, visitedNodes);
+
+    if (!cheapestNode) {
+      throw new Error(`there is no path between ${startNode.value} and ${targetNode.value}`);
+    }
+    queue.push(cheapestNode);
+  }
+}
+
 let startNode = null;
+let finishNode = null;
 
 describe('Graph', () => {
   beforeEach(() => {
@@ -103,16 +188,16 @@ describe('Graph', () => {
     const node2 = new GraphNode('C');
     const node3 = new GraphNode('D');
     const node4 = new GraphNode('F');
-    const node5 = new GraphNode('G');
+    finishNode = new GraphNode('G');
 
     startNode.setEdgeTo(node1, 5);
     startNode.setEdgeTo(node2, 2);
-    startNode.setEdgeTo(node5, 70);
+    startNode.setEdgeTo(finishNode, 70);
     node2.setEdgeTo(node1, 2);
     node2.setEdgeTo(node3, 7);
     node3.setEdgeTo(node4, 5);
-    node4.setEdgeTo(node5, 7);
-    node1.setEdgeTo(node5, 34);
+    node4.setEdgeTo(finishNode, 7);
+    node1.setEdgeTo(finishNode, 34);
   })
 
   it('creates graph node', () => {
@@ -132,5 +217,9 @@ describe('Graph', () => {
 
   it('finds the shortest path to the node', () => {
     expect(findShortestWay(startNode, 'G')).toStrictEqual(['A', 'G']);
+  })
+
+  it('finds the cheapest path to the node', () => {
+    expect(findCheapestPath(startNode, finishNode)).toStrictEqual({ path: ['A', 'C', 'D', 'F', 'G'], cost: 21 });
   })
 })
