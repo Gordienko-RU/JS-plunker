@@ -1,5 +1,5 @@
 class Item {
-  constructor(value, weight, label) {
+  constructor(weight, value, label) {
     this.value = value;
     this.weight = weight;
     this.label = label;
@@ -26,18 +26,21 @@ function pickMostValuableSet(containerSize, itemsToPick) {
   const weightTable = [[]];
 
   // NOTE: set initial row
-  for (const i = 0; i < containerSize; i += 1) {
+  for (let i = 0; i < containerSize; i++) {
     weightTable[0][i] = 0;
   }
+
+  const maxCellValuePaths = [];
 
   itemsToPick.forEach(({ label, value, weight }, rowIndex) => {
     const columnValues = [];
 
-    // TODO: not clear, rename
+    // NOTE: since there is initial row and columns index starts with 0 - few alignments needed
     const relevantWeight = weight - 1;
+    const aboveRowIndex = rowIndex;
 
-    for (const columnIndex = 0; columnIndex < containerSize; columnIndex += 1) {
-      const oldMaxCellValue = weightTable[rowIndex][columnIndex];
+    for (let columnIndex = 0; columnIndex < containerSize; columnIndex++) {
+      const oldMaxCellValue = weightTable[aboveRowIndex][columnIndex];
 
       if (relevantWeight > columnIndex) {
         columnValues[columnIndex] = oldMaxCellValue;
@@ -45,16 +48,26 @@ function pickMostValuableSet(containerSize, itemsToPick) {
         continue;
       }
 
-      const maxValueOfFreeCells = weightTable[rowIndex][columnIndex - weight];
+      const maxValueOfFreeCells = weightTable[aboveRowIndex][columnIndex - relevantWeight];
       const potentiallyMaxValue = maxValueOfFreeCells + value;
+      const isNewValueBigger = potentiallyMaxValue > oldMaxCellValue;
 
-      columnValues[columnIndex] = potentiallyMaxValue > oldMaxCellValue
+      columnValues[columnIndex] = isNewValueBigger
         ? potentiallyMaxValue
         : oldMaxCellValue;
+
+      if (isNewValueBigger) {
+        maxCellValuePaths[columnIndex] = [
+          ...(maxCellValuePaths[columnIndex - relevantWeight] || []),
+          label,
+        ]
+      }
     }
+
+    weightTable.push(columnValues);
   });
 
-  console.log('table', JSON.stringify(weightTable, null, 2));
+  console.log('table', maxCellValuePaths);
 }
 
 describe('pick the most valuable set of items', () => {
