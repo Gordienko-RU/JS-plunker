@@ -30,7 +30,7 @@ function pickMostValuableSet(containerSize, itemsToPick) {
     weightTable[0][i] = 0;
   }
 
-  const maxCellValuePaths = [];
+  const setsByColumn = [];
 
   itemsToPick.forEach(({ label, value, weight }, rowIndex) => {
     const columnValues = [];
@@ -48,7 +48,7 @@ function pickMostValuableSet(containerSize, itemsToPick) {
         continue;
       }
 
-      const maxValueOfFreeCells = weightTable[aboveRowIndex][columnIndex - relevantWeight];
+      const maxValueOfFreeCells = (weightTable[aboveRowIndex][columnIndex - weight]) || 0;
       const potentiallyMaxValue = maxValueOfFreeCells + value;
       const isNewValueBigger = potentiallyMaxValue > oldMaxCellValue;
 
@@ -57,8 +57,8 @@ function pickMostValuableSet(containerSize, itemsToPick) {
         : oldMaxCellValue;
 
       if (isNewValueBigger) {
-        maxCellValuePaths[columnIndex] = [
-          ...(maxCellValuePaths[columnIndex - relevantWeight] || []),
+        setsByColumn[columnIndex] = [
+          ...(setsByColumn[columnIndex - weight] || []),
           label,
         ]
       }
@@ -67,11 +67,11 @@ function pickMostValuableSet(containerSize, itemsToPick) {
     weightTable.push(columnValues);
   });
 
-  console.log('table', maxCellValuePaths);
+  return { items: setsByColumn.pop(), cost: weightTable.pop().pop() }
 }
 
 describe('pick the most valuable set of items', () => {
   it('pick most valuable set', () => {
-    expect(pickMostValuableSet(11, testItems)).toStrictEqual(['item7', 'item6'])
+    expect(pickMostValuableSet(11, testItems)).toStrictEqual({ items: ['item5', 'item6'], cost: 3450 });
   })
 });
