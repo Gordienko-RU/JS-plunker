@@ -2,11 +2,16 @@ const subStrings = [
   'hide',
   'wide',
   'gide',
-  'ride',
+  'ider',
 ];
 
-function findCommonSubString(array) {
-  
+function findCommonSubString(strings) {
+  const anchorWord = array.shift();
+  const sortedStrings = strings
+
+  Array.from(anchorWord).forEach((letter) => {
+
+  })
 }
 
 describe('findCommonSubstring', () => {
